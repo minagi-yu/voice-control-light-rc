@@ -5,8 +5,8 @@
 ;-------------------------------------------------------------------------
 
 ; ATtiny10
-; PB0: Out, IR Out (OC0A)
-; PB1: In,  Status in
+; PB0: In,  Status in
+; PB1: Out, IR Out (OC0B)
 ; PB2: Out, NC (Debug LED)
 ; PB3: In,  NC (Reset)
 
@@ -18,10 +18,10 @@
 .equ S_PORT     = PORTB
 .equ S_PIN      = PINB
 .equ S_PUE      = PUEB
-.equ S_BIT      = 1
+.equ S_BIT      = 0
 .equ S_DDR      = DDRB
 .equ IR_PORT    = PORTB
-.equ IR_BIT     = 0
+.equ IR_BIT     = 1
 .equ IR_DDR     = DDRB
 
 ;-------------------------------------------------------------------------
@@ -99,13 +99,13 @@ reset:
 main:
 ;    sbi     S_PUE, S_BIT            ; Enable pull up
 
-    ldi     temp, (1 << S_BIT)      ; Unmask pin change interrupt PB1
+    ldi     temp, (1 << S_BIT)      ; Unmask pin change interrupt
     out     PCMSK, temp             ; v
 
     ldi     temp, 12                ; f_oc0a=1MHz/(2*1*(1+12))=38kHz
     out     OCR0AL, temp            ; v
 
-    ldi     temp, 0b01000000        ; OCR0A(PB0) toggle enable
+    ldi     temp, 0b00010000        ; OCR0B(PB1) toggle enable
     out     TCCR0A, temp            ; v
     ldi     temp, 0b00001001        ; CTC Mode, no prescaling clock
     out     TCCR0B, temp            ; v
